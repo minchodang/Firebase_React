@@ -5,7 +5,7 @@ import Auth from '../routes/Auth';
 import Home from '../routes/Home';
 import Navigation from './Navigation';
 
-export default function Router({ isLoggedIn }) {
+export default function Router({ isLoggedIn, userObj }) {
   return (
     <>
       <BrowserRouter>
@@ -13,7 +13,7 @@ export default function Router({ isLoggedIn }) {
         <Routes>
           {isLoggedIn ? (
             <>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home userObj={userObj} />} />
               <Route path="/profile" element={<Profile />} />
             </>
           ) : (
