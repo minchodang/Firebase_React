@@ -8,7 +8,7 @@ import {
   orderBy,
 } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { ref, uploadString } from '@firebase/storage';
+import { ref, uploadString, getDownloadURL } from '@firebase/storage';
 import { v4 } from 'uuid';
 
 export default function Home({ userObj }) {
@@ -31,21 +31,31 @@ export default function Home({ userObj }) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const fileRef = ref(storageService, `${userObj.uid}/${v4()}`);
-    const response = await uploadString(fileRef, attachment, 'data_url');
-    console.log(response);
-    // try {
-    //   const docRef = await addDoc(collection(dbService, 'nweets'), {
-    //     text: nweet,
-    //     createdAt: Date.now(),
-    //     creatorId: userObj.uid,
-    //   });
-    //   console.log('Document written with ID: ', docRef.id);
-    // } catch (error) {
-    //   console.error('Error adding document: ', error);
-    // }
+    let attachmentUrl = '';
+    if (attachment !== '') {
+      const attachmentRef = ref(storageService, `${userObj.uid}/${v4()}`);
+      const response = await uploadString(
+        attachmentRef,
+        attachment,
+        'data_url'
+      );
+      attachmentUrl = await getDownloadURL(response.ref);
+    }
 
-    // setNweet('');
+    try {
+      const docRef = await addDoc(collection(dbService, 'nweets'), {
+        text: nweet,
+        createdAt: Date.now(),
+        creatorId: userObj.uid,
+        attachmentUrl,
+      });
+      console.log('Document written with ID: ', docRef.id);
+    } catch (error) {
+      console.error('Error adding document: ', error);
+    }
+
+    setNweet('');
+    setAttachment('');
   };
   const onChange = (e) => {
     const {
