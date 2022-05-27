@@ -14,7 +14,7 @@ import { v4 } from 'uuid';
 export default function Home({ userObj }) {
   const [nweet, setNweet] = useState('');
   const [nweets, setNweets] = useState([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState('');
   useEffect(() => {
     const q = query(
       collection(dbService, 'nweets'),
